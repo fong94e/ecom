@@ -1,0 +1,28 @@
+{
+    // dùng Prettier làm formatter mặc định
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+    // format khi lưu
+    "editor.formatOnSave": true,
+
+    // format HTML
+    "[html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+
+    // cấu hình indent
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+
+    // cấu hình prettier
+    "prettier.printWidth": 70,
+    "prettier.tabWidth": 4,
+    "prettier.useTabs": false,
+    "prettier.htmlWhitespaceSensitivity": "ignore",
+
+    // xuống dòng attribute hợp lý
+    "prettier.singleAttributePerLine": false,
+
+    // giữ dấu > ở dòng mới đúng chuẩn
+    "prettier.bracketSameLine": false
+}
