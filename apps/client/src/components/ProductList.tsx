@@ -63,7 +63,7 @@ const products: ProductsType = [
         categorySlug: "test",
     },
     {
-        id: 4,
+        id: 123,
         name: "Nike Dri Flex T-Shirt",
         shortDescription:
             "Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit.",
