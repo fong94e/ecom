@@ -1,13 +1,19 @@
 import { serve } from "@hono/node-server";
-import { timeStamp } from "console";
-import { clerkMiddleware, getAuth } from '@hono/clerk-auth'
+import { clerkMiddleware } from "@hono/clerk-auth";
 import { Hono } from "hono";
-import { uptime } from "process";
-import { ShouldBeUser } from "./middleware/authMiddleware.js";
+import sessionRoute from "./routes/session.route.js";
+import { cors } from "hono/cors";
 
 const app = new Hono();
 
-app.use('*', clerkMiddleware())
+app.use("*", clerkMiddleware());
+app.use(
+    "*",
+    cors({
+        origin: "http://localhost:3002",
+        allowMethods: ["GET", "POST", "OPTIONS"],
+    }),
+);
 
 app.get("/health", (c) => {
     return c.json({
@@ -17,13 +23,27 @@ app.get("/health", (c) => {
     });
 });
 
-app.get("/test",ShouldBeUser , (c) => {
+app.route("/sessions", sessionRoute);
 
-  return c.json({
-    message: 'Payment service authenticated',
-    userId:c.get('userId')
-  })
-});
+// app.post("/create-stripe-product", async (c) => {
+//     const res = await stripe.products.create({
+//         id: "1231",
+//         name: "Test Product",
+//         default_price_data: {
+//             currency: "vnd",
+//             unit_amount: 10 * 100,
+//         },
+//     });
+
+//     return c.json(res);
+// });
+// app.get("/stripe-product-price", async (c) => {
+//     const res = await stripe.prices.list({
+//         product: "123",
+//     });
+
+//     return c.json(res);
+// });
 
 const start = async () => {
     try {

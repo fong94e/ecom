@@ -1,0 +1,72 @@
+import { Hono } from "hono";
+import stripe from "../utils/stripe";
+import { ShouldBeUser } from "../middleware/authMiddleware";
+import { CartItemsType } from "@repo/types";
+import { getStripeProductsPrice } from "../utils/stripeProduct";
+
+const sessionRoute = new Hono();
+
+sessionRoute.post(
+    "/create-checkout-session",
+    ShouldBeUser,
+    async (c) => {
+        const { cart }: { cart: CartItemsType } = await c.req.json();
+        const userId = c.get("userId");
+
+        const lineItems = await Promise.all(
+            cart.map(async (item) => {
+                const unitAmount = await getStripeProductsPrice(
+                    item.id,
+                );
+                return {
+                    price_data: {
+                        currency: "usd",
+                        product_data: {
+                            name: item.name,
+                        },
+                        unit_amount: unitAmount as number,
+                    },
+                    quantity: item.quantity,
+                };
+            }),
+        );
+
+        try {
+            const session = await stripe.checkout.sessions.create({
+                ui_mode: "elements",
+                line_items: lineItems,
+                client_reference_id: userId,
+                mode: "payment",
+                return_url:
+                    "http://localhost:3002/return?session_id={CHECKOUT_SESSION_ID}",
+            });
+
+            console.log(session);
+
+            return c.json({
+                client_secret: session.client_secret,
+            });
+        } catch (error) {
+            console.log(error);
+            return c.json(error);
+        }
+    },
+);
+
+sessionRoute.get("/:session_id", async (c) => {
+    const { session_id } = c.req.param();
+    const session = await stripe.checkout.sessions.retrieve(
+        session_id as string,
+        {
+            expand: ["line_items"],
+        },
+    );
+    console.log(session);
+
+    return c.json({
+        status: session.status,
+        paymentStatus: session.payment_status,
+    });
+});
+
+export default sessionRoute;
