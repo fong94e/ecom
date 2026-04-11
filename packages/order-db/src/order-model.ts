@@ -26,4 +26,4 @@ const OrderSchema = new Schema(
 
 export type OrderSchemaType = InferSchemaType<typeof OrderSchema>;
 
-export const Order = model("Order", OrderSchema);
+export const Order = model<OrderSchemaType>("Order", OrderSchema);

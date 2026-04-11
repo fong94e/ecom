@@ -1,6 +1,5 @@
 import { getAuth } from "@hono/clerk-auth";
 import { createMiddleware } from "hono/factory";
-import { Variables } from "hono/types";
 import type { CustomJwtSessionClaims } from "@repo/types";
 
 export const ShouldBeUser = createMiddleware<{

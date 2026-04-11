@@ -1,5 +1,4 @@
 import { auth } from "@clerk/nextjs/server";
-import { log } from "console";
 
 const TestPage = async () => {
     const { getToken } = await auth();

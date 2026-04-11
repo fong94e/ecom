@@ -4,6 +4,7 @@ import { clerkMiddleware, getAuth } from "@clerk/express";
 import { ShouldBeUser } from "./middleware/authMiddleware.js";
 import productRouter from "./routes/product.route.js";
 import categoryRouter from "./routes/category.route.js";
+import { consumer, producer } from "./utils/kafka.js";
 
 const app = express();
 
@@ -41,14 +42,25 @@ app.use("/categories", categoryRouter);
 app.use(
     (err: any, req: Request, res: Response, next: NextFunction) => {
         console.error(err);
-        return res
-            .status(500)
-            .json({
-                message: err.message || "Internal Server Error",
-            });
+        return res.status(500).json({
+            message: err.message || "Internal Server Error",
+        });
     },
 );
 
-app.listen(8000, () => {
-    console.log("Product service is running on port 8000");
-});
+const start = async () => {
+    try {
+        Promise.all([
+            await producer.connect(),
+            await consumer.connect(),
+        ]);
+        app.listen(8000, () => {
+            console.log("Product service is running on port 8000");
+        });
+    } catch (error) {
+        console.log(error);
+        process.exit(1);
+    }
+};
+
+start();

@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import stripe from "../utils/stripe";
 import { ShouldBeUser } from "../middleware/authMiddleware";
 import { CartItemsType } from "@repo/types";
-import { getStripeProductsPrice } from "../utils/stripeProduct";
+import { getStripeProductPrice } from "../utils/stripeProduct";
 
 const sessionRoute = new Hono();
 
@@ -15,7 +15,7 @@ sessionRoute.post(
 
         const lineItems = await Promise.all(
             cart.map(async (item) => {
-                const unitAmount = await getStripeProductsPrice(
+                const unitAmount = await getStripeProductPrice(
                     item.id,
                 );
                 return {
