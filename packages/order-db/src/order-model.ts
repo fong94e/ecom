@@ -8,7 +8,7 @@ const OrderSchema = new Schema(
         email: { type: String, required: true },
         amount: { type: Number, required: true },
         status: { type: String, required: true, enum: OrderStatus },
-        product: {
+        products: {
             type: [
                 {
                     name: { type: String, required: true },

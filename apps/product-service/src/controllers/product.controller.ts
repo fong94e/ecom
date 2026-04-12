@@ -88,6 +88,11 @@ export const getProducts = async (req: Request, res: Response) => {
         }
     })();
 
+    console.log("sort =", sort);
+    console.log("orderBy =", orderBy);
+
+    const parsedLimit = Number(limit);
+
     const products = await prisma.product.findMany({
         where: {
             category: {
@@ -99,7 +104,10 @@ export const getProducts = async (req: Request, res: Response) => {
             },
         },
         orderBy,
-        take: limit ? Number(limit) : undefined,
+        take:
+            !isNaN(parsedLimit) && parsedLimit > 0
+                ? parsedLimit
+                : undefined,
     });
 
     res.status(200).json(products);
