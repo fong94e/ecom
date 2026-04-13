@@ -271,6 +271,11 @@ const getData = async (): Promise<{
                 },
             },
         );
+
+        console.log(
+            `${process.env.NEXT_PUBLIC_AUTH_SERVICE_URL}/users`,
+        );
+
         const data = await res.json();
         return data;
     } catch (error) {

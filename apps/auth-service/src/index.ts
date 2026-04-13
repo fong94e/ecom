@@ -12,7 +12,7 @@ app.use(
     }),
 );
 app.use(express.json());
-app.use(clerkMiddleware);
+app.use(clerkMiddleware());
 
 app.get("/health", (req: Request, res: Response) => {
     return res.status(200).json({

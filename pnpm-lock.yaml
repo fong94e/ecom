@@ -20,6 +20,9 @@ importers:
 
   apps/admin:
     dependencies:
+      '@clerk/express':
+        specifier: ^2.0.7
+        version: 2.0.7(express@5.2.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@clerk/nextjs':
         specifier: ^7.0.7
         version: 7.0.7(next@15.3.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -142,7 +145,7 @@ importers:
         specifier: ^5
         version: 5.9.2
 
-  apps/auth:
+  apps/auth-service:
     dependencies:
       '@clerk/express':
         specifier: ^2.0.7
