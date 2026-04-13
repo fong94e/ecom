@@ -21,8 +21,11 @@ export const orderRoute = async (fastify: FastifyInstance) => {
         "/orders",
         { preHandler: ShouldBeAdmin },
         async (request, reply) => {
-            const order = await Order.find();
-            return reply.send(order);
+            const { limit } = request.query as { limit: number };
+            const orders = await Order.find()
+                .limit(limit)
+                .sort({ createdAt: -1 });
+            return reply.send(orders);
         },
     );
     fastify.get(
