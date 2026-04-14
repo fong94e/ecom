@@ -9,12 +9,14 @@ export const createConsumer = (kafka: Kafka, groupId: string) => {
     };
 
     const subscribe = async (
-        topic: string,
-        handler: (message: any) => Promise<void>,
+        topics: {
+            topicName: string;
+            topicHandler: (message: any) => Promise<void>;
+        }[],
     ) => {
         try {
             await consumer.subscribe({
-                topic: topic,
+                topics: topics.map((topic) => topic.topicName),
                 fromBeginning: true,
             });
 
@@ -25,11 +27,19 @@ export const createConsumer = (kafka: Kafka, groupId: string) => {
                     message,
                 }) => {
                     try {
-                        const value = message.value?.toString();
+                        const topicConfig = topics.find(
+                            (t) => t.topicName === topic,
+                        );
+                        if (topicConfig) {
+                            const value = message.value?.toString();
 
-                        if (value) {
-                            const parsedMessage = JSON.parse(value);
-                            await handler(parsedMessage);
+                            if (value) {
+                                const parsedMessage =
+                                    JSON.parse(value);
+                                await topicConfig.topicHandler(
+                                    parsedMessage,
+                                );
+                            }
                         }
                     } catch (error) {
                         console.error(
@@ -40,10 +50,7 @@ export const createConsumer = (kafka: Kafka, groupId: string) => {
                 },
             });
         } catch (error) {
-            console.error(
-                `Error subscribing to topic ${topic}:`,
-                error,
-            );
+            console.error(error);
             throw error;
         }
     };
